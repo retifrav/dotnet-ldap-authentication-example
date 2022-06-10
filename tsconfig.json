@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "noEmitOnError": true,
+    "target": "ES6",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "removeComments": true,
+    "strictPropertyInitialization": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    //"preserveConstEnums": true
+    //"sourceMap": true
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES6",
+      "ES2018.Promise"
+    ],
+    "outDir": "./wwwroot/js"
+  },
+  "include": [
+    "./Scripts/**/*"
+  ]
+}

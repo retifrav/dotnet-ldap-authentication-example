@@ -1,0 +1,27 @@
+@model IDictionary<string, string>
+
+@{
+    ViewData["Title"] = "Administration";
+
+    string currentPath = Context.Request.Path;
+}
+
+<div class="section">
+    @await Html.PartialAsync("_BreadcrumbsPartial", currentPath)
+
+    <h2 class="page-header">Portal administration</h2>
+    <p>Active Directory service information.</p>
+
+    <div class="section nested">
+        <h3 class="page-header">General properties</h3>
+        <table class="table-nice no-border first-column-right last-column-left">
+            @foreach(var p in Model)
+            {
+                <tr>
+                    <td><b>@(p.Key)</b>:</td>
+                    <td>@(p.Value)</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewData["Title"] | Declaration of VAR</title>
+
+    <style>
+        #header-home-link-block {
+            display: flex;
+            align-items: center;
+        }
+        #header-home-link-block > * {
+            margin: 0 6px;
+        }
+        #header-home-link-block > *:first-child {
+            margin-left: 0;
+        }
+        #header-home-link-block > *:last-child {
+            margin-right: 0;
+        }
+    </style>
+
+
+    <link rel="stylesheet" href="/css/site.css">
+
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+</head>
+<body>
+    <header>
+        <div id="header-home-link-block">
+            <a href='@(Url.Action("Index", "Home"))'>
+                <h1>Declaration of VAR</h1>
+            </a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("managers"))
+            {
+                <a href='@(Url.Action("Index", "Admin"))'>
+                    <img class="icon" src="/images/icons/lock-fill.svg">
+                </a>
+            }
+        </div>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a href='@(Url.Action("Index", "Account"))'>
+                <img class="icon" src="/images/icons/person-fill.svg">
+            </a>
+        }
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
+        <span>
+            <a href="https://decovar.dev/">Declaration of VAR</a>
+        </span>
+        <span>[&nbsp;2022&nbsp;-&nbsp;@(DateTime.Now.Year)&nbsp;]</span>
+    </footer>
+
+    <script type="module" src="/js/main.js"></script>
+
+    @if (IsSectionDefined("AddToBottom"))
+    {
+        @RenderSection("AddToBottom", required: false)
+    }
+</body>
+</html>

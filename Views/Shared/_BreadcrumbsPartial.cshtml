@@ -1,0 +1,20 @@
+@model string
+
+@{
+    // Context.Request.Path passed from the parent view
+    string currentPath = Model;
+    string[] breadcrumbs = currentPath.TrimEnd('/').Split("/");
+}
+
+<div class="breadcrumbs">
+    <a href="/"><img src="/images/icons/house-door.svg" class="icon" style="width:initial; height:1.2em;"></a>
+    @for (int i = 1; i < breadcrumbs.Length-1; i++)
+    {
+        <img class="icon" src="/images/icons/chevron-right.svg">
+        <a href="@(currentPath.Substring(0, currentPath.LastIndexOf(breadcrumbs[i])))@(breadcrumbs[i])">
+            @breadcrumbs[i].Replace("-", " ")
+        </a>
+    }
+    <img class="icon" src="/images/icons/chevron-right.svg">
+    @(ViewData["slug"] == null ? ViewData["Title"] : ViewData["slug"])
+</div>

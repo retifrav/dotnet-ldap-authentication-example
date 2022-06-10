@@ -1,0 +1,24 @@
+﻿@model ErrorViewModel
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="section">
+    <h2 class="page-header">@(ViewData["Title"])</h2>
+    <p>
+        <b>Something went wrong on the server!</b>
+        <br>
+        Most likely, we already got a notification about it and are fixing the issue
+        at this very moment.
+    </p>
+</div>
+
+@section AddToBottom {
+    @if (Model.ShowRequestId)
+    {
+        <script>
+            console.error("Request ID: @(Model.RequestId)");
+        </script>
+    }
+}

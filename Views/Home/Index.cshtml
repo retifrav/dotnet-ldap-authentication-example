@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ADUser>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="section">
+    <h2 class="page-header">Overview</h2>
+
+    @if(!Model.Any())
+    {
+        <p style="font-style:italic;">Looks like AD doesn't have any records of the active users.</p>
+    }
+    else
+    {
+        <p>Total users: <b>@(Model.Count())</b>.</p>
+        <table id="users" class="table-nice first-column-left" style="margin-top:15px; width:100%;">
+            <tbody>
+                <tr>
+                    <th class="sortable" data-sorting-key="name">Name</th>
+                    <th>E-mail</th>
+                    <th class="sortable" data-sorting-key="registered">Registered</th>
+                </tr>
+            @foreach(var usr in Model.OrderBy(u => u.displayName))
+            {
+                <tr>
+                    <td>@(usr.displayName)</td>
+                    <td>@(usr.mail)</td>
+                    <td>@(usr.whenCreated.ToString("yyyy-MM-dd"))</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section AddToBottom
+{
+    <script type="module" src="/js/home/index.js"></script>
+}

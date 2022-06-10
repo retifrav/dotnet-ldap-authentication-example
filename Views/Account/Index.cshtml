@@ -1,0 +1,60 @@
+@using System.Security.Claims;
+
+@{
+    ViewData["Title"] = "Account";
+
+    string currentPath = Context.Request.Path;
+
+    string sAMAccountName = "-",
+           displayName = "-",
+           mail = "-",
+           whenCreated = "-",
+           memberOf = "-";
+
+    var identity = User.Identity as ClaimsIdentity;
+    if (identity != null) // likely redundant check, but just in case
+    {
+        sAMAccountName = identity.Claims.First(
+            c => c.Type == ClaimTypes.WindowsAccountName
+            ).Value;
+        displayName = identity.Claims.First(
+            c => c.Type == ClaimTypes.Name
+            ).Value;
+        mail = identity.Claims.First(
+            c => c.Type == ClaimTypes.Email
+            ).Value;
+        whenCreated = identity.Claims.First(
+            c => c.Type == "whenCreated"
+            ).Value;
+        memberOf = string.Join(
+            ", ",
+            identity.Claims
+                .Where(r => r.Type == ClaimTypes.Role)
+                .Select(r => r.Value)
+                .ToList<string>()
+            );
+    }
+}
+
+<div class="section">
+    @await Html.PartialAsync("_BreadcrumbsPartial", currentPath)
+
+    <h2 class="page-header">Your account</h2>
+
+    <table class="listing">
+        <tr><th>Full name:</th><td>@(displayName)</td></tr>
+        <tr><th>Username:</th><td>@(sAMAccountName)</td></tr>
+        <tr><th>E-mail:</th><td>@(mail)</td></tr>
+        <tr><th>Registered:</th><td>@(whenCreated)</td></tr>
+        <tr><th>Roles:</th><td>@(memberOf)</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="nice-button small-nice-button">Sign-out</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>

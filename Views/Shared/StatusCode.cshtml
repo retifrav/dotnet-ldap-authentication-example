@@ -1,0 +1,37 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "Error";
+
+    var statusCode = Model;
+    string statusmessage;
+    switch (statusCode)
+    {
+        case 400:
+            statusmessage = "Something wrong with your request.";
+            break;
+        case 401:
+            statusmessage = "Authentication failed.";
+            break;
+        case 403:
+            statusmessage = "Access denied.";
+            break;
+        case 404:
+            statusmessage = "No such page.";
+            break;
+        case 408:
+            statusmessage = "Timeout.";
+            break;
+        case 500:
+            statusmessage = "Server error.";
+            break;
+        default:
+            statusmessage = "Unknown error.";
+            break;
+    }
+}
+
+<div class="section">
+    <h2>Error @(Model)</h2>
+    <p style="margin-top:10px;">@statusmessage</p>
+</div>
