@@ -34,6 +34,8 @@ public class AdminController : Controller
             // https://www.alvestrand.no/objectid/1.2.840.113556.1.4.800.html.
             var searchResults = General.SearchInAD(
                 _configurationAD.LDAPserver,
+                _configurationAD.Port,
+                _configurationAD.Domain,
                 _configurationAD.Username,
                 _configurationAD.Password,
                 string.Empty,

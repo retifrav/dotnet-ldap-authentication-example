@@ -29,9 +29,7 @@ public static class General
     // won't work on non-Windows hosts, as it requires System.DirectoryServices
     /*
     public void SearchInADwindowsOnly(
-        string zone,
-        string domain,
-        string subdomain,
+        string ldapServer,
         string username,
         string password,
         string filter // "(&(objectCategory=User)(objectClass=person))"
@@ -39,7 +37,7 @@ public static class General
     {
         SearchResultCollection results;
         DirectorySearcher ds = null;
-        DirectoryEntry de = new DirectoryEntry($"LDAP://{subdomain}.{domain}.{zone}");
+        DirectoryEntry de = new DirectoryEntry($"LDAP://{ldapServer}");
         de.Username = username;
         de.Password = password;
 
@@ -59,7 +57,8 @@ public static class General
     // based on https://github.com/dotnet/runtime/issues/36947#issuecomment-744046087
     public static SearchResponse SearchInAD(
         string ldapServer,
-        //int ldapPort,
+        int ldapPort,
+        string domainForAD,
         string username,
         string password,
         string targetOU,
@@ -76,26 +75,23 @@ public static class General
         // AD user login with domain. On other platforms at the moment only Basic authentication
         // is supported
         var authType = AuthType.Negotiate;
-        // not a great approach, but really didn't want to pass one more (semi-duplicated)
-        // parameter, which would only be used for when this is an authentication query
-        var ldapServerComponents = ldapServer.Split('.');
         if (!OperatingSystem.IsWindows())
         {
             authType = AuthType.Basic;
             username = OperatingSystem.IsWindows()
                 ? username
                 // this might require modification to the actual AD domain value
-                : $"{ldapServerComponents[ldapServerComponents.Length - 2]}\\{username}";
+                : $"{domainForAD}\\{username}";
         }
 
         // depending on LDAP server, username might require some proper wrapping
         // instead(!) of just prepending username with domain
         //username = $"uid={username},cn=users,dc=subdomain,dc=domain,dc=zone";
 
-        // var connection = new LdapConnection(
-        //     new LdapDirectoryIdentifier(ldapServer, ldapPort)
-        //     )
-        var connection = new LdapConnection(ldapServer)
+        //var connection = new LdapConnection(ldapServer)
+        var connection = new LdapConnection(
+            new LdapDirectoryIdentifier(ldapServer, ldapPort)
+            )
         {
             AuthType = authType,
             Credential = new(username, password)
@@ -113,33 +109,5 @@ public static class General
         var request = new SearchRequest(targetOU, query, scope, attributeList);
 
         return (SearchResponse)connection.SendRequest(request);
-
-        // var response = (SearchResponse)connection.SendRequest(request);
-        // int resultCount = response.Entries.Count;
-        // Console.WriteLine($"Found entries: {resultCount}");
-
-        // const int EntryDisplayLimit = 2;
-        // const int AttributeDisplayLimit = 5;
-        // foreach (SearchResultEntry searchEntry in response.Entries.Cast<SearchResultEntry>().Take(EntryDisplayLimit))
-        // {
-        //     if (!string.IsNullOrEmpty(searchEntry.DistinguishedName))
-        //     {
-        //         Console.WriteLine($"Distinguished name: {searchEntry.DistinguishedName}");
-        //     }
-        //     foreach (DictionaryEntry attributeEntry in searchEntry.Attributes.Cast<DictionaryEntry>().OrderBy(e => e.Key).Take(AttributeDisplayLimit))
-        //     {
-        //         DirectoryAttribute attribute = (DirectoryAttribute)attributeEntry.Value!;
-
-        //         IReadOnlyList<object> values = attribute.Cast<object>()
-        //             .Select(value => value is byte[] bytes
-        //                 ? (bytes.Length > 0 && !bytes.Any(b => b == 0)
-        //                     ? Encoding.UTF8.GetString(bytes)
-        //                     : ("0x" + string.Concat(bytes.Select(b => b.ToString("X2")))))
-        //                 : value)
-        //             .Distinct()
-        //             .ToList();
-        //         Console.WriteLine($"\t{attribute.Name} = {string.Join(" | ", values)}");
-        //     }
-        // }
     }
 }

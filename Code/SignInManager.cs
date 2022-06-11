@@ -38,6 +38,8 @@ namespace decovar.dev.Code
 
             var searchResults = General.SearchInAD(
                 _configurationAD.LDAPserver,
+                _configurationAD.Port,
+                _configurationAD.Domain,
                 username,
                 password,
                 $"CN=Users,{_configurationAD.LDAPQueryBase}",

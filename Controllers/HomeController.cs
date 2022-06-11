@@ -38,6 +38,8 @@ public class HomeController : Controller
         };
         var searchResults = General.SearchInAD(
             _configurationAD.LDAPserver,
+            _configurationAD.Port,
+            _configurationAD.Domain,
             _configurationAD.Username,
             _configurationAD.Password,
             $"CN=Users,{_configurationAD.LDAPQueryBase}",
