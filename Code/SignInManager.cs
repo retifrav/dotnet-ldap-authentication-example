@@ -42,12 +42,24 @@ namespace decovar.dev.Code
                 password,
                 $"CN=Users,{_configurationAD.LDAPQueryBase}",
                 new StringBuilder("(&")
+                    // Active Directory attributes
                     .Append("(objectCategory=person)")
                     .Append("(objectClass=user)")
+                    // ---
+                    // Synology DSM LDAP attribute
                     //.Append("(objectClass=person)")
+                    // ---
                     .Append($"(memberOf={_configurationAD.Crew})")
+                    // ---
+                    // fails on Synology DSM LDAP, even though it should be supported
                     .Append("(!(userAccountControl:1.2.840.113556.1.4.803:=2))")
+                    // ---
+                    // Active Directory attribute
                     .Append($"(sAMAccountName={username})")
+                    // ---
+                    // Synology DSM LDAP attribute
+                    //.Append($"(uid={username})")
+                    // ---
                     .Append(")")
                     .ToString(),
                 SearchScope.Subtree,
