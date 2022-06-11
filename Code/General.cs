@@ -100,7 +100,7 @@ public static class General
         // is actually needed, but at least Synology LDAP works only with v3,
         // and since our Exchange doesn't complain, let it be v3
         connection.SessionOptions.ProtocolVersion = 3;
-        // they mention that there are possible issues with that on non-Windows hosts
+        // doesn't work on non-Windows hosts, so you can't connect via LDAPS (636 port)
         //connection.SessionOptions.SecureSocketLayer = true;
 
         connection.Bind();

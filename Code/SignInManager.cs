@@ -98,7 +98,7 @@ namespace decovar.dev.Code
                     var groupNameBytes = g as byte[];
                     if (groupNameBytes != null)
                     {
-                        adUser.memberOf.Add(Encoding.Default.GetString(groupNameBytes));
+                        adUser.memberOf.Add(Encoding.Default.GetString(groupNameBytes).ToLower());
                     }
                 }
             }
@@ -119,7 +119,7 @@ namespace decovar.dev.Code
                 new Claim("whenCreated", adUser.whenCreated.ToString("yyyy-MM-dd"))
             };
             // perhaps it should add a role for every group, but we only need one for now
-            if (adUser.memberOf.Contains(_configurationAD.Managers))
+            if (adUser.memberOf.Contains(_configurationAD.Managers.ToLower()))
             {
                 claims.Add(new Claim(ClaimTypes.Role, "managers"));
             }
