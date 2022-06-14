@@ -63,16 +63,16 @@ try
                 // of employees leaving the company), but increases the annoyance
                 // for users, as they'll need to sign-in more often
                 options.ExpireTimeSpan = TimeSpan.FromDays(11);
+                // for the same reasons you migth want setting this one to false
+                options.SlidingExpiration = true;
 
                 options.LoginPath = "/account/login";
                 options.AccessDeniedPath = "/account/access-denied";
-                options.SlidingExpiration = true;
             }
         );
 
     builder.Services.AddAuthorization(options =>
     {
-        // default policy for loging-in in general
         options.DefaultPolicy = new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
             .Build();

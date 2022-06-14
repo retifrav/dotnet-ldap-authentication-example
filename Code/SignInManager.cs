@@ -72,7 +72,7 @@ namespace decovar.dev.Code
                     "displayName",
                     "mail",
                     "whenCreated",
-                    "memberof"
+                    "memberOf"
                 }
             );
 
@@ -92,7 +92,7 @@ namespace decovar.dev.Code
                         System.Globalization.CultureInfo.InvariantCulture
                     )
                 };
-                var groups = resultsEntry.Attributes["memberof"];
+                var groups = resultsEntry.Attributes["memberOf"];
                 foreach(var g in groups)
                 {
                     var groupNameBytes = g as byte[];

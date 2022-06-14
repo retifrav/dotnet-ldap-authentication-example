@@ -72,9 +72,11 @@ public static class General
 
         // https://github.com/dotnet/runtime/issues/63759#issuecomment-1019318988
         // on Windows the authentication type is Negotiate, so there is no need to prepend
-        // AD user login with domain. On other platforms at the moment only Basic authentication
-        // is supported
+        // AD user login with domain. On other platforms at the moment only
+        // Basic authentication is supported
         var authType = AuthType.Negotiate;
+        // also can fail on non AD servers, so you might prefer
+        // to just use AuthType.Basic everywhere
         if (!OperatingSystem.IsWindows())
         {
             authType = AuthType.Basic;
@@ -85,8 +87,8 @@ public static class General
         }
 
         // depending on LDAP server, username might require some proper wrapping
-        // instead(!) of just prepending username with domain
-        //username = $"uid={username},cn=users,dc=subdomain,dc=domain,dc=zone";
+        // instead(!) of prepending username with domain
+        //username = $"uid={username},CN=Users,DC=subdomain,DC=domain,DC=zone";
 
         //var connection = new LdapConnection(ldapServer)
         var connection = new LdapConnection(
@@ -100,12 +102,15 @@ public static class General
         // is actually needed, but at least Synology LDAP works only with v3,
         // and since our Exchange doesn't complain, let it be v3
         connection.SessionOptions.ProtocolVersion = 3;
-        // doesn't work on non-Windows hosts, so you can't connect via LDAPS (636 port)
+        // for connecting via LDAPS (636 port). That should be working, according to
+        // https://github.com/dotnet/runtime/issues/43890
+        // but it doesn't (at least with Synology DSM LDAP), although perhaps
+        // for a different reason
         //connection.SessionOptions.SecureSocketLayer = true;
 
         connection.Bind();
 
-        _logger.Debug($"Searching scope: [{scope}], target: [{targetOU}], query: [{query}]");
+        //_logger.Debug($"Searching scope: [{scope}], target: [{targetOU}], query: [{query}]");
         var request = new SearchRequest(targetOU, query, scope, attributeList);
 
         return (SearchResponse)connection.SendRequest(request);
