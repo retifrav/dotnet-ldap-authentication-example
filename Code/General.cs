@@ -82,7 +82,7 @@ public static class General
             authType = AuthType.Basic;
             username = OperatingSystem.IsWindows()
                 ? username
-                // this might require modification to the actual AD domain value
+                // this might need to be changed to your actual AD domain value
                 : $"{domainForAD}\\{username}";
         }
 
@@ -102,8 +102,9 @@ public static class General
         // is actually needed, but at least Synology LDAP works only with v3,
         // and since our Exchange doesn't complain, let it be v3
         connection.SessionOptions.ProtocolVersion = 3;
-        // for connecting via LDAPS (636 port). That should be working, according to
-        // https://github.com/dotnet/runtime/issues/43890
+
+        // this is for connecting via LDAPS (636 port). It should be working,
+        // according to https://github.com/dotnet/runtime/issues/43890,
         // but it doesn't (at least with Synology DSM LDAP), although perhaps
         // for a different reason
         //connection.SessionOptions.SecureSocketLayer = true;
